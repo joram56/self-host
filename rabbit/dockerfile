@@ -1,0 +1,5 @@
+FROM rabbitmq:management-alpine
+
+# enable the rabbitmq_stomp plugin
+RUN rabbitmq-plugins enable rabbitmq_stomp
+COPY rabbitmq.conf /etc/rabbitmq/rabbitmq.conf

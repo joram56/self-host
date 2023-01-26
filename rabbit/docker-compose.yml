@@ -1,0 +1,9 @@
+version: "3.2"
+services:
+  rabbitmq:
+    # Default password is guest/guest
+    build: ./
+    container_name: "rabbitmq"
+    ports:
+      - 5672:5672
+      - 15672:15672

@@ -1,0 +1,18 @@
+# Use postgres/admin user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    build: ./
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: admin
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

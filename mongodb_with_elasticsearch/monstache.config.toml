@@ -1,0 +1,37 @@
+mongo-url = "mongodb://root:wortel@mongo:27017"
+
+# mapper-plugin-path = "/app/plugin.so"
+
+elasticsearch-urls = ["http://elasticsearch:9200"]
+# elasticsearch-user = "elastic"
+# elasticsearch-password = "changeme"
+elasticsearch-max-seconds = 5
+elasticsearch-max-conns = 6
+
+change-stream-namespaces = ["stubber2.stubs", "stubber2.contacts"]
+direct-read-namespaces = ["stubber2.stubs", "stubber2.contacts"]
+exit-after-direct-reads = false
+
+enable-http-server = true
+prune-invalid-json = true
+
+verbose = false
+
+# GO scripts are much faster than JS scripts
+[[script]]
+script = """
+module.exports = function(doc) {
+  if (doc.__deleted) {
+    return false
+  }
+
+  console.log("doc: " + JSON.stringify(doc))
+
+  if (doc.data) {
+    console.log("DELETING DATA doc: " + JSON.stringify(doc))
+    delete doc.data
+    console.log("doc: " + JSON.stringify(doc))
+  }
+  return doc
+}
+"""

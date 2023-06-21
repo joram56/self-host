@@ -1,0 +1,46 @@
+version: "3.1"
+
+volumes:
+  mongodb-stubber-dev-test:
+
+services:
+  mongo:
+    image: mongo:4.4
+    logging:
+      driver: none
+    # container_name: mongo
+    command: /scripts/mongo-run.sh
+    working_dir: /scripts
+    volumes:
+      - ./mongodb/scripts:/scripts
+      - mongodb-stubber-dev-test:/data/db
+    environment:
+      MONGO_REPLICA_SET_NAME: rs0
+      MONGO_REPLICAS: mongo:27017
+      MONGO_REPLICA_SET_MEMBERS: "[{'_id':0,'host':'mongo:27017','priority':1}]"
+      MONGO_USER_ROOT_NAME: root
+      MONGO_USER_ROOT_PASSWORD: root1234
+      MONGO_AUTH: "true"
+      MONGO_AUTH_SOURCE: admin
+      MONGO_BIND_IP: "0.0.0.0"
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: "[ -f /data/health.check ] && exit 0 || exit 1"
+      interval: 2s
+      timeout: 30s
+      retries: 300
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root1234
+      ME_CONFIG_MONGODB_URL: mongodb://root:root1234@mongo:27017/
+    depends_on:
+      mongo:
+        condition: service_healthy

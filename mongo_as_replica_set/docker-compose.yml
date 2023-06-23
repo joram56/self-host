@@ -8,7 +8,7 @@ services:
     image: mongo:4.4
     logging:
       driver: none
-    # container_name: mongo
+    container_name: mongo
     command: /scripts/mongo-run.sh
     working_dir: /scripts
     volumes:
